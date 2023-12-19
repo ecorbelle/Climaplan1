@@ -13,7 +13,7 @@ datos1 <- read_excel("Datos/1 Demográficas.xls",
                      sheet = "Densidade poboación 2022",
                      range = "a6:c318",
                      col_names = c("codigoine", "concello", "dens.pob.2022")) |> 
-  subset(select = "dens.pob.2022")
+  subset(select = c("dens.pob.2022", "concello"))
 
 ### Variación da poboación 2000-2022 ----
 datos2 <- read_excel("Datos/1 Demográficas.xls",
@@ -151,7 +151,7 @@ datos16 <- read_excel("Datos/5 Propiedade e mobilidade da terra.xlsx",
 # (Estes precisan de utilizar o código INE para unirse aos demais)
 datos17 <- read_excel("Datos/frq_incendios1996_2005_dd-web_tcm30-199964.xlsx",
                       sheet = "Datos1996_2005 Galicia",
-                      range = "a2:k312",
+                      range = "a2:k311",
                       col_names = c("concello", "codigoine", "Nut2", 
                                     "proine", "pronine", "n.conatos.1996.2005",
                                     "n.incendios.1996.2005", "incendios.arborado.1996.2005.ha",
@@ -162,7 +162,7 @@ datos17 <- read_excel("Datos/frq_incendios1996_2005_dd-web_tcm30-199964.xlsx",
 
 datos18 <- read_excel("Datos/frq_incendios2006_2015_dd-web_tcm30-525841.xlsx",
                       sheet = "Datos2006_2015 Galicia",
-                      range = "a2:k312",
+                      range = "a2:k311",
                       col_names = c("concello", "codigoine", "Nut2", 
                                     "proine", "pronine", "n.conatos.2006.2015",
                                     "n.incendios.2006.2015", "incendios.arborado.2006.2015.ha",
@@ -178,8 +178,8 @@ datos_a <- cbind(datos1,  datos2,  datos3,  datos4,  datos5,  datos6,
                  datos7,  datos8,  datos9,  datos10, datos11, datos12, 
                  datos13, datos14, datos15, datos16)
 
-datos_b <- merge(datos_a, datos17, by = "codigoine")
-datos_b <- merge(datos_b, datos18, by = "codigoine")
+datos_b <- merge(datos_a, datos17, by = "codigoine", all.x = TRUE)
+datos_b <- merge(datos_b, datos18, by = "codigoine", all.x = TRUE)
 
 ## 2. Creación e selección de campos ----
 datos_b$titulares.hab <- datos_b$titulares.cat / datos_b$pob.2022
@@ -198,7 +198,7 @@ datos_b$prop.incendios.total.2006.2015 <- datos_b$incendios.total.2006.2015.ha /
 
 
 datos <- subset(datos_b,
-                select = c("codigoine", 
+                select = c("codigoine", "concello",
                            "dens.pob.2022", "var.pob.2000.2022",
                            "porcent.mais.65", "ind.envell", 
                            "emprego.agric", "emprego.pesca",
@@ -228,3 +228,12 @@ datos <- subset(datos_b,
 ## 3. Exportación ----
 library(R.utils)
 
+writeDataFrame(datos,
+               "Temp/Variables_explicativas.csv",
+               row.names = FALSE,
+               createdBy = "Eduardo Corbelle (eduardo.corbelle@usc.es)",
+               createdOn = format(Sys.time(), format = "%Y-%m-%d %H:%M:%S %Z"),
+               header = list(content = "Variables potencialmente explicativas compiladas a partir da selección feita por Edelmiro."),
+               sep    = ";",
+               dec    = ".",
+               overwrite = TRUE)
