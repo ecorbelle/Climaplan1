@@ -11,11 +11,11 @@ library(terra)
 library(grid)
 
 # Carga de datos
-datos0 <- st_read("Tmp/Areas_siose.gpkg", layer = "concellos")
+datos0 <- st_read("Temp/Areas_siose.gpkg", layer = "concellos")
 datos1 <- st_drop_geometry(datos0) |> as.data.table() |> unique()
 
 # (Para a comprobación da área de SIOSE 2017 segundo IDmax)
-datos1b <- fread("Tmp/siose2017_concellos.csv", 
+datos1b <- fread("Temp/siose2017_concellos.csv", 
                 col.names = c("codigoine", "v2", "v3", "cuberta", "area_m2"))
 
 # Datos globais para Galicia (Valores en hectáreas)
@@ -144,7 +144,7 @@ datos1b[order(grupo) ,
 
 
 # Datos para a produción de gráficos
-datos4 <- melt(datos2b, id.vars = 1)
+datos4 <- melt(datos2, id.vars = 1)
 datos4$ano <- substr(datos4$variable, 7, 10)
 datos4$cub <- substr(datos4$variable, 1, 5)
 
@@ -155,7 +155,7 @@ datos4b <- merge(datos4, agrup1) # data.table (concellos, formato longo)
 
 
 # Produción de gráficos
-relevo <- rast("Aux/Relief200.tif")
+sombra <- rast("Datos/Aux/Relief200.tif")
 
 grupo.labels <- paste("Cluster", levels(factor(datos4b$grupo)))
 names(grupo.labels) <- levels(factor(datos4b$grupo))
@@ -177,19 +177,31 @@ g1 <- ggplot(datos4b, aes(x = ano, y = value, fill = factor(grupo))) +
   theme(legend.position = "none") 
   
 
+bbox <- st_bbox(datos0b)
+bbox[1] <- bbox[1] - 10e3 # xmin
+bbox[2] <- bbox[2] - 10e3 # ymin
 
-m1 <- tm_shape(datos0b) + 
+m1 <- tm_shape(datos0b, bb = bbox) + 
   tm_fill(col = "grupo", style = "cat", palette = cores, title = "Cluster") +
-  tm_shape(relevo) + 
-  tm_raster(palette = "-Greys", alpha = .375, legend.show = FALSE)
+  tm_shape(sombra) + 
+  tm_raster(palette = "-Greys", alpha = .375, legend.show = FALSE) +
+  tm_layout(legend.outside = TRUE,
+            legend.outside.position = "left") +
+  tm_scale_bar(position = c(0,-.02),
+               breaks = c(0,25,50),
+               lwd = .2) +
+  tm_compass(position = c(0,.85),
+             size = 1)
 
 
-pdf("Resultados/agrupacion_concellos.pdf", width = 7*16/9, height = 7)
-print(g1, vp = viewport( 0, 0, width = .5, height = .95, just = c("left", "bottom")))
-print(m1, vp = viewport(.5, 0, width = .5, height = 1, just = c("left", "bottom")))
-dev.off()
 
-png("Resultados/agrupacion_concellos.png", width = 15, height = 15, units = "cm", res = 300)
+# pdf("Resultados/agrupacion_concellos.pdf", width = 7*16/9, height = 7)
+# print(g1, vp = viewport( 0, 0, width = .5, height = .95, just = c("left", "bottom")))
+# print(mapa1, vp = viewport(.5, 0, width = .5, height = 1, just = c("left", "bottom")))
+# dev.off()
+
+png("Resultados/agrupacion_concellos.png", 
+    width = 90, height = 70, units = "mm", res = 300)
 print(m1)
 dev.off()
 
