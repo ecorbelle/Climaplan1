@@ -92,13 +92,17 @@ datos2  <- datos1[ , .("plfor_2005" = (p_coni_2005_sum + p_fper_2005_sum) / (are
                        "built_2017" = p_edif_2017_sum / (area_ha*1600)),
                    .(codigoine)]
 
+# Para incorporar "outros"
+datos2$outros_2005 <- datos2[ , .( 1 - (plfor_2005 + spfor_2005 + shrub_2005 + agric_2005 + built_2005) )]
+datos2$outros_2017 <- datos2[ , .( 1 - (plfor_2017 + spfor_2017 + shrub_2017 + agric_2017 + built_2017) )]
+
 # Datos para a análise de conglomerados
 datos3 <- as.data.frame(scale(datos2[,-1]))
 rownames(datos3) <- datos2$codigoine
 
 # Análise de conglomerados (proba 1: análise xerárquica)
- analise <- NbClust(data = datos3, distance = "euclidean", method = "ward.D2",
-                    min.nc = 2, max.nc = 7)
+ # analise <- NbClust(data = datos3, distance = "euclidean", method = "ward.D2",
+ #                    min.nc = 2, max.nc = 7) # Falla ao ter unha matriz "completa" despois de engadir "outros"
 
 clust1 <- hclust(dist(datos3, method = "euclidean"),
                  method = "ward.D2")
@@ -159,7 +163,7 @@ sombra <- rast("Datos/Aux/Relief200.tif")
 
 grupo.labels <- paste("Cluster", levels(factor(datos4b$grupo)))
 names(grupo.labels) <- levels(factor(datos4b$grupo))
-cub.labels <- c("Farmland", "Built-up", "Plantation forest", "Native forest", "Shrubland")
+cub.labels <- c("Farmland", "Built-up", "Plantation forest", "Native forest", "Shrubland", "Other")
 names(cub.labels) <- levels(factor(datos4b$cub))
 
 cores <- brewer.pal(ng, "Set1")
