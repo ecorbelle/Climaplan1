@@ -1,4 +1,5 @@
 ## Código para producir unha base de datos con variables socioeconómicas
+## Pensada para ter valores municipais que producir en gráficos
 ## Eduardo Corbelle, 18 decembro 2023
 
 library(readxl)
@@ -85,7 +86,7 @@ datos9 <- read_excel("Datos/3 Agrarias e forestais.xlsx",
 ### Unidades gandeiras ----
 datos10 <- read_excel("Datos/3 Agrarias e forestais.xlsx",
                       sheet = "Unidades Gandeiras 2020",
-                      range = "a5:l317",
+                      range = "a6:l318",
                       col_names = c("codigoine", "concello", "bovino", "ovino.caprino",
                                     "porcino", "aves.curral", "ugt.total", "ugt.bovino.ovino.caprino",
                                     "nada", "area.km2", "ugt.km2", "ugt.bovino.ovino.caprino.km2")) |> 
