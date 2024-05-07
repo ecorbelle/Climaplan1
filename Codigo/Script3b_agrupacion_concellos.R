@@ -187,7 +187,7 @@ bbox[2] <- bbox[2] - 10e3 # ymin
 
 m1 <- tm_shape(datos0b, bb = bbox) + 
   tm_fill(col = "grupo", style = "cat", palette = cores, title = "Cluster") +
-  tm_shape(sombra) + 
+  tm_shape(sombra, raster.downsample = FALSE) + 
   tm_raster(palette = "-Greys", alpha = .375, legend.show = FALSE) +
   tm_layout(legend.outside = TRUE,
             legend.outside.position = "left") +
