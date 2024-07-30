@@ -230,11 +230,13 @@ datos <- subset(datos_b,
 library(R.utils)
 
 writeDataFrame(datos,
-               "Temp/Variables_explicativas.csv",
+               "Resultados/Variables_explicativas.csv",
                row.names = FALSE,
                createdBy = "Eduardo Corbelle (eduardo.corbelle@usc.es)",
                createdOn = format(Sys.time(), format = "%Y-%m-%d %H:%M:%S %Z"),
-               header = list(content = "Variables potencialmente explicativas compiladas a partir da selección feita por Edelmiro."),
+               header = list(content = "Variables potencialmente explicativas."),
                sep    = ";",
                dec    = ".",
                overwrite = TRUE)
+
+writexl::write_xlsx(datos, "Temp/Variables.xls")

@@ -73,6 +73,8 @@ dev.off()
 
 # Táboas ----
 
+
+
 # Variables demográficas
 datos[,
       .(dens.pob = median(dens.pob.2022),
