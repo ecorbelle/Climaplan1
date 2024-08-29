@@ -14,10 +14,10 @@ relevo <- rast("~/Traballo/Recursos/Datos_Cartografia/mdt200.ncd")
 relevo[relevo<=0] <- NA
 
 sombra <- rast("Datos/Aux/Relief200.tif")
-ccaa <- st_read("~/Traballo/Recursos/Datos_Cartografia/LimitesAdmin/IGN/SHP_ETRS89/recintos_autonomicas_inspire_peninbal_etrs89/")
-pt <- st_read("~/Traballo/Recursos/Datos_Cartografia/LimitesAdmin/Portugal/PT_Continental.gpkg",
+ccaa <- st_read("~/Traballo/Recursos/Datos_Cartografia/Descargados/LimitesAdmin/IGN/SHP_ETRS89/recintos_autonomicas_inspire_peninbal_etrs89/")
+pt <- st_read("~/Traballo/Recursos/Datos_Cartografia/Descargados/LimitesAdmin/Portugal/PT_Continental.gpkg",
            layer = "PT_Continental")
-fr <- st_read("~/Traballo/Recursos/Datos_Cartografia/LimitesAdmin/Francia/FRA_adm0_simp00005.shp")
+fr <- st_read("~/Traballo/Recursos/Datos_Cartografia/Descargados/LimitesAdmin/Francia/FRA_adm0_simp00005.shp")
 
 ## Simplificación ----
 ccaa <- ms_simplify(ccaa, 
@@ -65,7 +65,8 @@ bbox[1] <- bbox[1] - 100e3 # xmin
 mapa2 <- tm_shape(relevo, bb = bbox) +
   tm_raster(palette = "Greys", 
             title = "Elevation (m asl)",
-            breaks = c(0, 500, 1000, 1500, 2100)) +
+            breaks = c(0, 500, 1000, 1500, 2100),
+            legend.format=list(fun=function(x) formatC(x, digits=0, format="d"))) +
   tm_shape(ccaa[numero,]) +
   tm_borders(lwd = 1) +
   tm_shape(sombra) +
