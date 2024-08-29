@@ -31,49 +31,8 @@ for (i in 4:ncol(datos)) {
   }
 dev.off()
 
-## Para presentar ----
-
-cores <- RColorBrewer::brewer.pal(4, "Set1")
-comun <- list(geom_boxplot(),
-              xlab("Cluster"),
-              ylab(""),
-              scale_fill_manual(values = cores),
-              theme_light(),
-              theme(legend.position = "none",
-                    plot.title = element_text(size = 10),
-                    axis.title = element_text(size =  9)))
-
-g.demo1 <- ggplot(datos, aes(x = grupo, y = dens.pob.2022, fill = grupo)) + 
-  ggtitle("Population density, 2022 (inhab/km², log scale)") +
-  scale_y_log10() +
-  comun
-g.demo2 <- ggplot(datos, aes(x = grupo, y = 100*var.pob.2000.2022, fill = grupo)) + 
-  ggtitle("Population change, 2000-2022 (%)") +
-  comun
-g.demo3 <- ggplot(datos, aes(x = grupo, y = ind.envell, fill = grupo)) + 
-  ggtitle("Ageing index, 2022 (%)") +
-  comun
-g.demo4 <- ggplot(datos, aes(x = grupo, y = porcent.mais.65, fill = grupo)) + 
-  ggtitle("Population over 65 (%)") +
-  comun
-
-
-png("Resultados/gr_demograficas.png", width = 190, height = 120, units = "mm", res = 300)
-print(g.demo1, vp = viewport(0, 1, width = .5, height = .5, 
-                             just = c("left", "top")))
-print(g.demo2, vp = viewport(0.5, 1, width = .5, height = .5, 
-                             just = c("left", "top")))
-print(g.demo3, vp = viewport(0, .5, width = .5, height = .5, 
-                             just = c("left", "top")))
-print(g.demo4, vp = viewport(0.5, .5, width = .5, height = .5, 
-                             just = c("left", "top")))
-
-dev.off()
-
 
 # Táboas ----
-
-
 
 # Variables demográficas
 datos[,
